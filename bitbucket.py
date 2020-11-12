@@ -11,6 +11,10 @@ CLI INPUT FORMATTING
     python3 bitbucket.py username([1] in args list) -r/--add-repo repoName -P/--project-name projectName -p/--path path
 '''
 
+'''
+    TODO: make a list projects dude for listing projects because yuh 8)
+'''
+
 class Bitbucket():
     def __init__(self, username, password):
         # Adding the headless option allows the browser to open without a GUI. This makes the program far more user friendly.
