@@ -6,15 +6,20 @@ from autoread import read
 import sys
 import subprocess
 
+'''
+CLI INPUT FORMATTING
+    python3 bitbucket.py username([1] in args list) -r/--add-repo repoName -P/--project-name projectName -p/--path path
+'''
+
 class Bitbucket():
     def __init__(self, username, password):
         # Adding the headless option allows the browser to open without a GUI. This makes the program far more user friendly.
-        # chrome_options = Options()
-        # chrome_options.add_argument("--headless")
-        # self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
 
         # COMMENT OUT THE ABOVE THREE LINES AND UNCOMMENT THIS ONE IF YOU WANT TO SEE THE BROWSER WINDOW
-        self.driver = webdriver.Chrome(ChromeDriverManager().install())
+        # self.driver = webdriver.Chrome(ChromeDriverManager().install())
 
         try:
             # Login stuff
@@ -73,11 +78,6 @@ class Bitbucket():
 
         print("\nDub :)")
 
-
-'''
-CLI INPUT FORMATTING
-    python3 bitbucket.py username([1] in args list) -r/--add-repo repoName -P/--project-name projectName -p/--path path
-'''
 
 if __name__ == "__main__":
     print("\nLogging in as " + sys.argv[1])
