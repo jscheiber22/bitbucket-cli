@@ -3,8 +3,12 @@ def read(path):
         f = open(path, "r")
         lines = f.readlines()
         return lines[0].replace("\n", "")
-
-    except:
-        print("Operation failed.")
-    finally:
         f.close()
+    except:
+        try:
+            f = open(path + ".txt", "r")
+            lines = f.readlines()
+            return lines[0].replace("\n", "")
+            f.close()
+        except:
+            print("Read operation failed.")
