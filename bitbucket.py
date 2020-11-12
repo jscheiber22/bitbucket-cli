@@ -80,7 +80,27 @@ class Bitbucket():
 
 
 if __name__ == "__main__":
-    print("\nLogging in as " + sys.argv[1])
+    if "-h" in sys.argv or "--help" in sys.argv:
+        print("\nUse bitbucket-cli to do a variety of fun bitbucket tasks, like create a new repository and pull it automatically.")
+        print("\nArgs:")
+        print("-r/--add-repo")
+        print("    Add a new repo\n")
+        print("-P/--project-name")
+        print("    Specify a project name to create a repo under. Defaults to 'Untitled project'\n")
+        print("-p/--path")
+        print("    Specify a path to clone the new repository to. Defaults to the current directory\n")
+        print("--public")
+        print("    Make the new repo public, rather than the default private\n")
+        exit()
+
+    try:
+        print("\nLogging in as " + sys.argv[1])
+    except IndexError:
+        print("No username input.")
+        exit()
+    except:
+        raise
+
     # Initial Login
     bit = Bitbucket(username=sys.argv[1], password=read("pass"))
 
@@ -127,3 +147,8 @@ if __name__ == "__main__":
 
         # Do it 8)
         bit.addRepository(repoName=repoName, projectName=projectName, public=publicAccess, path=path)
+
+    else:
+        print("\nNo task specified. A wasted login :(")
+        bit.driver.close()
+        exit()
