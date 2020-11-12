@@ -72,7 +72,7 @@ class Bitbucket():
         print("\nFound clone link at " + cloneLink + ", pulling now.")
         sleep(1)
         if path is not None:
-            subprocess.call(["git", "clone", cloneLink, path + repoName + "/"])
+            subprocess.call(["git", "clone", cloneLink, path + repoName])
         else:
             subprocess.call(["git", "clone", cloneLink])
 
@@ -139,7 +139,7 @@ if __name__ == "__main__":
             exit()
 
         if path is not None:
-            print("\nCreating new repo " + repoName + " under project " + projectName + ". The repo will be cloned under '" + path + repoName + "/' when complete.")
+            print("\nCreating new repo " + repoName + " under project " + projectName + ". The repo will be cloned under '" + path + repoName + " when complete.")
         else:
             print("\nCreating new repo " + repoName + " under project " + projectName + ". The repo will be cloned under the current directory when complete.")
             print("btw the current directory is:")
