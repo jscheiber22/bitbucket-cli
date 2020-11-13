@@ -2,9 +2,9 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from time import sleep
-from autoread import read
 import sys
 import subprocess
+from getpass import getpass
 
 '''
 CLI INPUT FORMATTING
@@ -13,6 +13,9 @@ CLI INPUT FORMATTING
 
 '''
     TODO: make a list projects dude for listing projects because yuh 8)
+          add a parameter to automatically create a License, blank __init__ file, blank __setup__ file, and anything else for basic package stuff, then auto try to commit them :)
+             and folder for package contents, oh and readme :) but custom and cool 8)
+
 '''
 
 class Bitbucket():
@@ -99,6 +102,7 @@ if __name__ == "__main__":
 
     try:
         print("\nLogging in as " + sys.argv[1])
+        pswd = getpass()
     except IndexError:
         print("No username input.")
         exit()
@@ -106,7 +110,7 @@ if __name__ == "__main__":
         raise
 
     # Initial Login
-    bit = Bitbucket(username=sys.argv[1], password=read("pass"))
+    bit = Bitbucket(username=sys.argv[1], password=pswd)
 
     # Tasks (ex. add repository)
     addRepo = False
