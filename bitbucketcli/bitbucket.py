@@ -47,7 +47,34 @@ class Bitbucket():
             print("\nLogin failed.")
             raise
 
-    def addRepository(self, repoName, public, path, projectName='Untitled project'):
+    def addRepository(self, repoName = "New Repository"):
+        # Repo specific variables
+        projectName = 'Untitled project'
+        path = None
+        publicAccess = False
+
+        # Get all other necessary info from cli input
+        count = 0
+        for arg in sys.argv:
+            if "--project-name" in arg or "-P" in arg:
+                projectName = sys.argv[count + 1]
+            if "--path" in arg or "-p" in arg:
+                path = sys.argv[count + 1]
+            if "--public" in arg:
+                publicAccess = True
+            count += 1
+
+        if repoName is None:
+            print("\nNo repository name detected. Please use the '-r' tag to include one.")
+            exit()
+
+        if path is not None:
+            print("\nCreating new repo " + repoName + " under project " + projectName + ". The repo will be cloned under '" + path + repoName + " when complete.")
+        else:
+            print("\nCreating new repo " + repoName + " under project " + projectName + ". The repo will be cloned under the current directory when complete.")
+            print("btw the current directory is:")
+            subprocess.call("pwd")
+
         self.driver.get("https://bitbucket.org/repo/create")
         sleep(5)
         projectDropdown = self.driver.find_element_by_xpath("//div[@id='s2id_id_project']")
@@ -85,6 +112,20 @@ class Bitbucket():
 
         print("\nDub :)")
 
+    def listProjects(self):
+        projectNames = []
+
+        self.driver.get('https://bitbucket.org/dashboard/projects')
+        sleep(5)
+        projectSpans = self.driver.find_elements_by_xpath("//span[@class='project-list--name']")
+        print("\n")
+        print("Projects:")
+        for span in projectSpans:
+            name = span.find_element_by_xpath(".//a").text
+            print("     " + name)
+        print("\n")
+
+
 
 if __name__ == "__main__":
     if "-h" in sys.argv or "--help" in sys.argv:
@@ -112,51 +153,12 @@ if __name__ == "__main__":
     # Initial Login
     bit = Bitbucket(username=sys.argv[1], password=pswd)
 
-    # Tasks (ex. add repository)
-    addRepo = False
-    repoName = None
-
     # For loop specifically for finding tasks
     count = 0
     for arg in sys.argv:
         if "-r" in arg or "--add-repo" in arg:
-            repoName = sys.argv[count + 1]
-            addRepo = True
+            bit.addRepository(sys.argv[count + 1])
+        elif "-l" in arg or "--list-projects" in arg:
+            bit.listProjects()
+
         count += 1
-
-    # Add a Repository Selected
-    if addRepo:
-        # Repo specific variables
-        projectName = 'Untitled project'
-        path = None
-        publicAccess = False
-
-        # Get all other necessary info from cli input
-        count = 0
-        for arg in sys.argv:
-            if "--project-name" in arg or "-P" in arg:
-                projectName = sys.argv[count + 1]
-            if "--path" in arg or "-p" in arg:
-                path = sys.argv[count + 1]
-            if "--public" in arg:
-                publicAccess = True
-            count += 1
-
-        if repoName is None:
-            print("\nNo repository name detected. Please use the '-r' tag to include one.")
-            exit()
-
-        if path is not None:
-            print("\nCreating new repo " + repoName + " under project " + projectName + ". The repo will be cloned under '" + path + repoName + " when complete.")
-        else:
-            print("\nCreating new repo " + repoName + " under project " + projectName + ". The repo will be cloned under the current directory when complete.")
-            print("btw the current directory is:")
-            subprocess.call("pwd")
-
-        # Do it 8)
-        bit.addRepository(repoName=repoName, projectName=projectName, public=publicAccess, path=path)
-
-    else:
-        print("\nNo task specified. A wasted login :(")
-        bit.driver.close()
-        exit()

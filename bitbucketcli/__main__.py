@@ -29,54 +29,15 @@ def main():
     # Initial Login
     bit = Bitbucket(username=sys.argv[1], password=pswd)
 
-    # Tasks (ex. add repository)
-    addRepo = False
-    repoName = None
-
     # For loop specifically for finding tasks
     count = 0
     for arg in sys.argv:
         if "-r" in arg or "--add-repo" in arg:
-            repoName = sys.argv[count + 1]
-            addRepo = True
+            bit.addRepository(sys.argv[count + 1])
+        elif "-l" in arg or "--list-projects" in arg:
+            bit.listProjects()
+
         count += 1
-
-    # Add a Repository Selected
-    if addRepo:
-        # Repo specific variables
-        projectName = 'Untitled project'
-        path = None
-        publicAccess = False
-
-        # Get all other necessary info from cli input
-        count = 0
-        for arg in sys.argv:
-            if "--project-name" in arg or "-P" in arg:
-                projectName = sys.argv[count + 1]
-            if "--path" in arg or "-p" in arg:
-                path = sys.argv[count + 1]
-            if "--public" in arg:
-                publicAccess = True
-            count += 1
-
-        if repoName is None:
-            print("\nNo repository name detected. Please use the '-r' tag to include one.")
-            exit()
-
-        if path is not None:
-            print("\nCreating new repo " + repoName + " under project " + projectName + ". The repo will be cloned under '" + path + repoName + " when complete.")
-        else:
-            print("\nCreating new repo " + repoName + " under project " + projectName + ". The repo will be cloned under the current directory when complete.")
-            print("btw the current directory is:")
-            subprocess.call("pwd")
-
-        # Do it 8)
-        bit.addRepository(repoName=repoName, projectName=projectName, public=publicAccess, path=path)
-
-    else:
-        print("\nNo task specified. A wasted login :(")
-        bit.driver.close()
-        exit()
 
 if __name__ == "__main__":
     main()
