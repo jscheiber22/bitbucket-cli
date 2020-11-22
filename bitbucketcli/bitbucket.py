@@ -28,24 +28,33 @@ class Bitbucket():
         # COMMENT OUT THE ABOVE THREE LINES AND UNCOMMENT THIS ONE IF YOU WANT TO SEE THE BROWSER WINDOW
         # self.driver = webdriver.Chrome(ChromeDriverManager().install())
 
+        # Login stuff
+        self.driver.get("https://bitbucket.org/account/signin/")
+        usernameBox = self.driver.find_element_by_id("username")
+        usernameBox.send_keys(username)
+        loginSubmit = self.driver.find_element_by_id("login-submit")
+        loginSubmit.click()
+        sleep(1)
+
+        passBox = self.driver.find_element_by_id("password")
+        passBox.send_keys(password)
+        loginSubmit.click()
+        sleep(5)
+
+        # Unfortunately backwards logic to confirm a successful login. It checks to see if the username prompt is still on the screen, and if it is not, it fails, which means the
+        # login was successful, if that makes sense :/
+        fail = False
         try:
-            # Login stuff
-            self.driver.get("https://bitbucket.org/account/signin/")
-            usernameBox = self.driver.find_element_by_id("username")
-            usernameBox.send_keys(username)
-            loginSubmit = self.driver.find_element_by_id("login-submit")
-            loginSubmit.click()
-            sleep(1)
-
-            passBox = self.driver.find_element_by_id("password")
-            passBox.send_keys(password)
-            loginSubmit.click()
-            sleep(5)
-
-            print("\nSuccessful login.")
+            successCheck = self.driver.find_element_by_id("password")
+            print("\nLogin Failed. Incorrect password?")
+            fail = True
         except:
-            print("\nLogin failed.")
-            raise
+            print("\nLogin Successful.")
+
+        # Also putting exit() in the try section makes it fail so it does the except stuff >:(
+        if fail:
+            exit()
+
 
     def addRepository(self, repoName = "New Repository"):
         # Repo specific variables
@@ -63,10 +72,6 @@ class Bitbucket():
             if "--public" in arg:
                 publicAccess = True
             count += 1
-
-        if repoName is None:
-            print("\nNo repository name detected. Please use the '-r' tag to include one.")
-            exit()
 
         if path is not None:
             print("\nCreating new repo " + repoName + " under project " + projectName + ". The repo will be cloned under '" + path + repoName + " when complete.")
@@ -125,6 +130,22 @@ class Bitbucket():
             print("     " + name)
         print("\n")
 
+    def listRepos(self):
+        repoNames = []
+
+        self.driver.get('https://bitbucket.org/dashboard/repositories')
+        sleep(5)
+        repoSpans = self.driver.find_elements_by_xpath("//a[@class='']")
+        if len(repoSpans) / 2 > 20:
+            yn = input("List all " + str(len(repoSpans) / 2) + " repositories? (y/n): ")
+            if yn == "n" or yn == "N":
+                exit()
+        print("\n")
+        print("Repositories:")
+        for span in repoSpans:
+            print("     " + span.text)
+        print("\n")
+
 
 
 if __name__ == "__main__":
@@ -137,6 +158,10 @@ if __name__ == "__main__":
         print("    Specify a project name to create a repo under. Defaults to 'Untitled project'\n")
         print("-p/--path")
         print("    Specify a path to clone the new repository to. Defaults to the current directory\n")
+        print("-l/--list-projects")
+        print("    List all of the projects under the account\n")
+        print("-L/--list-repos")
+        print("    List all of the repositories under the account\n")
         print("--public")
         print("    Make the new repo public, rather than the default private\n")
         exit()
@@ -160,5 +185,7 @@ if __name__ == "__main__":
             bit.addRepository(sys.argv[count + 1])
         elif "-l" in arg or "--list-projects" in arg:
             bit.listProjects()
+        elif "-L" in arg or "--list-repos" in arg:
+            bit.listRepos()
 
         count += 1
