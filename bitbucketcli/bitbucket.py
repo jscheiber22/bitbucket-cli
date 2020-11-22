@@ -8,11 +8,11 @@ from getpass import getpass
 
 '''
 CLI INPUT FORMATTING
-    python3 bitbucket.py username([1] in args list) -r/--add-repo repoName -P/--project-name projectName -p/--path path
+    python3 -m bitbucketcli username([1] in args list) -r/--add-repo repoName -P/--project-name projectName -p/--path path
 '''
 
 '''
-    TODO: make a list projects dude for listing projects because yuh 8)
+    TODO:
           add a parameter to automatically create a License, blank __init__ file, blank __setup__ file, and anything else for basic package stuff, then auto try to commit them :)
              and folder for package contents, oh and readme :) but custom and cool 8)
 
@@ -23,6 +23,7 @@ class Bitbucket():
         # Adding the headless option allows the browser to open without a GUI. This makes the program far more user friendly.
         chrome_options = Options()
         chrome_options.add_argument("--headless")
+        print("\n\nChrome installation stuff:")
         self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
 
         # COMMENT OUT THE ABOVE THREE LINES AND UNCOMMENT THIS ONE IF YOU WANT TO SEE THE BROWSER WINDOW
