@@ -2,10 +2,11 @@ from setuptools import setup, find_packages
 
 setup(
     name='bitbucketcli',
-    version='0.1.8',
+    version='0.2.0',
     description='A command line interface for working with Bitbucket.',
     author='James Scheiber',
     author_email='jscheiber22@gmail.com',
+    url='https://www.scheibertech.com',
     packages=find_packages(include=['bitbucketcli', 'bitbucketcli.*']),
     install_requires=[
         'selenium',
