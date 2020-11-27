@@ -5,6 +5,7 @@ from time import sleep
 import sys
 import subprocess
 from getpass import getpass
+import os
 
 '''
 CLI INPUT FORMATTING
@@ -13,17 +14,15 @@ CLI INPUT FORMATTING
 
 '''
     TODO:
-          add a parameter to automatically create a License, blank __init__ file, blank __setup__ file, and anything else for basic package stuff, then auto try to commit them :)
-             and folder for package contents, oh and readme :) but custom and cool 8)
-
 '''
 
 class Bitbucket():
     def __init__(self, username, password):
+        print("\n\nChrome installation stuff:")
+
         # Adding the headless option allows the browser to open without a GUI. This makes the program far more user friendly.
         chrome_options = Options()
         chrome_options.add_argument("--headless")
-        print("\n\nChrome installation stuff:")
         self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
 
         # COMMENT OUT THE ABOVE THREE LINES AND UNCOMMENT THIS ONE IF YOU WANT TO SEE THE BROWSER WINDOW
@@ -118,6 +117,31 @@ class Bitbucket():
 
         print("\nDub :)")
 
+        if "-d" in sys.argv or "--pkg-defaults" in sys.argv:
+            print("\nNow creating the defualt files and directories.")
+            name = input("Your name(for the License): ")
+
+            subprocess.call(["touch", path + repoName + "/" + "LICENSE"])
+            f = open(path + repoName + "/" + "LICENSE", "w+")
+
+            f.write("MIT License\n\nCopyright (c) 2020 " + name + '\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the "Software"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.')
+            f.close()
+
+            os.mkdir(path + repoName + "/" + repoName + "/")
+            subprocess.call(["touch", path + repoName + "/" + repoName + "/" + "__init__.py"])
+            subprocess.call(["touch", path + repoName + "/" + repoName + "/" + "__main__.py"])
+
+            print("\nSuccessfully created all files and directories, now attempting to commit.")
+
+            os.chdir(path + repoName)
+            subprocess.call(["git", "pull"])
+
+            subprocess.call(["git", "add", "."])
+            subprocess.call(["git", "commit", "-am", "Initial commit :)"])
+            subprocess.call(["git", "push"])
+
+            print("Extra dub :D")
+
     def listProjects(self):
         projectNames = []
 
@@ -163,6 +187,8 @@ if __name__ == "__main__":
         print("    List all of the projects under the account\n")
         print("-L/--list-repos")
         print("    List all of the repositories under the account\n")
+        print("-d/--pkg-defaults")
+        print("    Create default files for a package such as a License and setup.py as well as directories, then attempt to commit the new goodies to the new repository.\n")
         print("--public")
         print("    Make the new repo public, rather than the default private\n")
         exit()
